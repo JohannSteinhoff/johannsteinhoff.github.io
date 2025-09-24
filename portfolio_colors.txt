@@ -1,0 +1,10 @@
+Color Styles for Portfolio Website
+
+Background (Deep Navy): #0b1020
+Panel/Card Background: #0f162f
+Primary Text: #e6edf6
+Secondary Text (Muted): #9fb0c6
+Accent Brand Blue: #3ec6ff
+Accent Brand Yellow: #facc15
+Border: #1b2441
+OK/Success Green: #22c55e
