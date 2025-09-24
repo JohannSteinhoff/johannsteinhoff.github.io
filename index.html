@@ -1,242 +1,323 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Johann Steinhoff | Portfolio</title>
-  <meta name="description" content="Portfolio website for Johann Steinhoff – projects, experience, and contact info." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0b1020;          /* deep navy */
-      --panel:#0f162f;       /* card/bg */
-      --text:#e6edf6;        /* primary text */
-      --muted:#9fb0c6;       /* secondary text */
-      --brand:#3ec6ff;       /* accent */
-      --brand-2:#facc15;     /* accent 2 */
-      --border:#1b2441;      /* borders */
-      --ok:#22c55e;          /* chips */
-      --shadow: 0 10px 30px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.02) inset;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";}
-    a{color:var(--brand);text-decoration:none}
-    a:hover{text-decoration:underline}
-    .container{max-width:1100px;margin:0 auto;padding:24px}
-    header{position:sticky;top:0;background:linear-gradient(180deg,var(--bg),rgba(11,16,32,.85));backdrop-filter:saturate(140%) blur(6px);border-bottom:1px solid var(--border);z-index:10}
-    nav{display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .logo{font-weight:800;letter-spacing:.2px}
-    .navlinks a{margin-left:18px;font-weight:600;color:var(--muted)}
-    .navlinks a:hover{color:var(--text)}
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
-    /* hero */
-    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:center;padding:56px 0}
-    .tag{display:inline-block;padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:.85rem}
-    h1{font-size:clamp(2rem,4vw,3rem);margin:14px 0 8px}
-    .subtitle{color:var(--muted);line-height:1.6}
-    .cta{display:flex;gap:12px;margin-top:22px}
-    .btn{background:var(--brand);color:#041422;border-radius:12px;padding:10px 16px;font-weight:700;border:0;box-shadow:var(--shadow)}
-    .btn.secondary{background:transparent;border:1px solid var(--border);color:var(--text)}
-    .headshot{aspect-ratio:1/1;border-radius:24px;background:linear-gradient(145deg,var(--panel),#101a3a);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:var(--shadow)}
-    .headshot img{width:100%;height:100%;object-fit:cover}
+// ----------
+// Portfolio Replica — Dark Grid
+// Inspired by joseph.cv layout: sticky header, 12-col grid, project cards, ticker footer.
+// TailwindCSS required in host app. Drop this file into a React project and render <PortfolioReplica />.
+// Replace content in DATA below with your own (names, copy, images, links).
+// ----------
 
-    /* sections */
-    section{margin:32px 0 64px}
-    .section-title{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-    .section-title h2{margin:0;font-size:1.4rem}
-    .hr{height:1px;background:linear-gradient(90deg,var(--brand),transparent);flex:1}
+const DATA = {
+  name: "Johann Steinhoff",
+  role: "Interaction / CS Student",
+  location: "Houston / San Marcos, TX",
+  email: "mailto:you@example.com",
+  about:
+    "I design and build interactive systems. I like complex, ambiguous problem spaces around AI tools, digital craftsmanship, and multimodal interfaces.",
+  highlights: [
+    {
+      team: "Notion",
+      when: "2025 – Present",
+      desc: "Building beautiful tools for your life’s work.",
+    },
+    {
+      team: "Azuki",
+      when: "2023 – 2025",
+      desc: "First design hire. Scaled team to 5. Built social/interactive experiences.",
+    },
+    {
+      team: "Independent Practice",
+      when: "—",
+      desc: (
+        <>
+          Design consulting for emerging AI & productivity companies. Notable clients include
+          {" "}
+          <a className="link" href="https://cursor.sh/" target="_blank" rel="noreferrer">Cursor</a>
+          {" • "}
+          <a className="link" href="https://www.rox.com/" target="_blank" rel="noreferrer">Rox</a>
+          {" • "}
+          <a className="link" href="https://natural.ai/#/" target="_blank" rel="noreferrer">Brain Technologies</a>.
+        </>
+      ),
+    },
+    {
+      team: "Skiff",
+      when: "2022 – 2023",
+      desc: (
+        <>
+          0→1 design for Mail, Editor, Drive, Calendar. Acquired by Notion.
+          {" "}
+          <a className="link" href="https://www.notion.so/blog/meet-skiff-the-newest-member-of-the-notion-family" target="_blank" rel="noreferrer">(read)</a>
+        </>
+      ),
+    },
+    {
+      team: "Apple",
+      when: "2020 – 2021",
+      desc: "Conversational AI patterns and multimodal behaviors for Siri (AI/ML).",
+    },
+  ],
+  projects: [
+    {
+      title: "Anime.com",
+      tag: "Consumer Social",
+      locked: true,
+      mediaType: "image",
+      src: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1600&auto=format&fit=crop",
+      href: "#",
+    },
+    {
+      title: "Azuki",
+      tag: "Consumer Product",
+      mediaType: "image",
+      src: "https://images.unsplash.com/photo-1518349619113-03114f06ac3a?q=80&w=1600&auto=format&fit=crop",
+      href: "#",
+    },
+    {
+      title: "Skiff",
+      tag: "Productivity",
+      mediaType: "image",
+      badge: "Acquired by Notion",
+      src: "https://images.unsplash.com/photo-1526378722484-bd91ca387e72?q=80&w=1600&auto=format&fit=crop",
+      href: "#",
+    },
+    {
+      title: "Cursor AI",
+      tag: "AI Tooling",
+      mediaType: "image",
+      src: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop",
+      href: "#",
+    },
+    {
+      title: "Thinkspace",
+      tag: "Assistive AI Agents",
+      mediaType: "video",
+      src: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+      href: "#",
+    },
+    {
+      title: "Multimodal Search",
+      tag: "Brain Technologies",
+      mediaType: "video",
+      src: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+      href: "#",
+    },
+    {
+      title: "Skiff Pages",
+      tag: "Editor Tool",
+      mediaType: "image",
+      src: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1600&auto=format&fit=crop",
+      href: "#",
+      anchor: "#editor",
+    },
+    {
+      title: "AIGA Hue",
+      tag: "Data Visualization",
+      mediaType: "image",
+      src: "https://images.unsplash.com/photo-1472289065668-ce650ac443d2?q=80&w=1600&auto=format&fit=crop",
+      href: "#",
+    },
+    {
+      title: "LIGHT ENGINE",
+      tag: "Industrial Design",
+      mediaType: "image",
+      src: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1600&auto=format&fit=crop",
+      href: "#",
+    },
+    {
+      title: "Apple",
+      tag: "Conversational AI",
+      mediaType: "video",
+      src: "https://storage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTI_review.mp4",
+      href: "#",
+    },
+    {
+      title: "Brain Technologies",
+      tag: "Conversational AI",
+      mediaType: "image",
+      src: "https://images.unsplash.com/photo-1600267175161-cfaa711b4a52?q=80&w=1600&auto=format&fit=crop",
+      href: "#",
+    },
+    {
+      title: "Skiff Mail",
+      tag: "Productivity Tooling",
+      mediaType: "image",
+      src: "https://images.unsplash.com/photo-1544739313-616c076b8649?q=80&w=1600&auto=format&fit=crop",
+      href: "#mail",
+    },
+    {
+      title: "Pixel Push",
+      tag: "Multiplayer Art",
+      mediaType: "video",
+      src: "https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+      href: "#",
+    },
+  ],
+  footerLinks: [
+    { label: "Reading", href: "#reading" },
+    { label: "Journal", href: "#journal" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/" },
+    { label: "Instagram", href: "https://www.instagram.com/" },
+    { label: "Twitter", href: "https://twitter.com/" },
+  ],
+};
 
-    /* chips */
-    .chips{display:flex;flex-wrap:wrap;gap:8px}
-    .chip{border:1px solid var(--border);background:rgba(255,255,255,.02);padding:6px 10px;border-radius:999px;color:var(--muted);font-weight:600;font-size:.9rem}
-
-    /* grid cards */
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-    .card{grid-column:span 12;background:linear-gradient(145deg,var(--panel),#101a3a);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
-    .card h3{margin:4px 0 8px;font-size:1.1rem}
-    .card p{margin:0;color:var(--muted)}
-
-    @media(min-width:720px){
-      .card.span-6{grid-column:span 6}
-      .card.span-4{grid-column:span 4}
-    }
-
-    /* timeline */
-    .timeline{position:relative;padding-left:22px}
-    .timeline:before{content:"";position:absolute;left:6px;top:0;bottom:0;width:2px;background:linear-gradient(var(--brand),transparent)}
-    .t-item{position:relative;margin:14px 0;padding:8px 12px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.02)}
-    .t-item:before{content:"";position:absolute;left:-10px;top:14px;width:12px;height:12px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 3px #0b1020}
-    .t-meta{color:var(--muted);font-size:.9rem}
-
-    footer{border-top:1px solid var(--border);padding:24px 0;color:var(--muted)}
-  </style>
-</head>
-<body>
-  <header>
-    <div class="container">
-      <nav>
-        <div class="logo">Johann Steinhoff</div>
-        <div class="navlinks">
-          <a href="#about">About</a>
-          <a href="#skills">Skills</a>
-          <a href="projects.html">Projects</a>
-          <a href="#experience">Experience</a>
-          <a href="#education">Education</a>
-          <a href="#contact">Contact</a>
-        </div>
-      </nav>
+function Ticker({ text }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.animate(
+      [
+        { transform: "translateX(0)" },
+        { transform: "translateX(-50%)" },
+      ],
+      { duration: 18000, iterations: Infinity, easing: "linear" }
+    );
+  }, []);
+  return (
+    <div className="overflow-hidden relative w-full text-xs text-zinc-600">
+      <div ref={ref} className="whitespace-nowrap">
+        {Array(6)
+          .fill(null)
+          .map((_, i) => (
+            <span key={i} className="mr-8">
+              ▞▚▞▚▞▚▞ _Copyright_2025_ ▞▚▞▚▞▚▞ _Next.JS_Vercel_ ▞▚▞▚▞▚▞ _INPUT_MONO_
+            </span>
+          ))}
+      </div>
     </div>
-  </header>
+  );
+}
 
-  <main class="container">
-    <!-- HERO -->
-    <section class="hero">
-      <div>
-        <span class="tag">Open to internships · Software / Security · GitHub Pages</span>
-        <h1>CS Student building secure, useful things.</h1>
-        <p class="subtitle">I’m <strong>Johann Steinhoff</strong>, a Computer Science student (Texas State University) interested in cybersecurity, hardware hacking, and practical ML/automation. This is my portfolio: selected projects, experience, and contact info.</p>
-        <div class="cta">
-          <a class="btn" href="#projects">View Projects</a>
-          <a class="btn secondary" href="#contact">Contact Me</a>
-        </div>
-        <div class="chips" style="margin-top:16px">
-          <span class="chip">Python</span>
-          <span class="chip">C/C++</span>
-          <span class="chip">Java</span>
-          <span class="chip">HTML/CSS/JS</span>
-          <span class="chip">Git/GitHub</span>
-          <span class="chip">Cybersecurity</span>
-          <span class="chip">IoT / Arduino / ESP32</span>
-        </div>
+function ProjectCard({ p }) {
+  return (
+    <a href={p.href} className="relative group select-none">
+      <div className="relative overflow-hidden rounded-xl border border-white/10 bg-white/5">
+        {p.mediaType === "video" ? (
+          <video
+            className="w-full h-full object-cover"
+            playsInline
+            loop
+            autoPlay
+            muted
+            src={p.src}
+          />
+        ) : (
+          <img src={p.src} alt={p.title} className="w-full h-full object-cover" />
+        )}
+        {p.badge && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 bg-white text-black px-3 py-1 rounded-full border border-black/20">
+            <p className="text-[11px] tracking-wide uppercase">{p.badge}</p>
+          </div>
+        )}
+        {p.locked && (
+          <span className="absolute top-3 right-3 text-[11px] px-2 py-1 rounded-md bg-black/70 text-white shadow-xl">
+            LOCKED
+          </span>
+        )}
+        <div className="absolute inset-0 bg-white/[0.03] opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
-      <div class="headshot">
-        <!-- Optional: replace src with your own image URL -->
-        <img src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" alt="Profile placeholder" />
+      <div className="mt-3">
+        <h3 className="text-zinc-50 text-sm font-medium">{p.title}</h3>
+        <p className="text-zinc-500 text-xs">{p.tag}</p>
       </div>
-    </section>
+    </a>
+  );
+}
 
-    <!-- ABOUT -->
-    <section id="about">
-      <div class="section-title"><h2>About</h2><div class="hr"></div></div>
-      <div class="grid">
-        <div class="card span-6">
-          <h3>Summary</h3>
-          <p>Curious, hands‑on developer who likes building things that interact with the real world. I enjoy security‑minded projects (ethical hacking tools, device teardown/analysis), and practical software that’s easy to use and easy to maintain.</p>
+export default function PortfolioReplica() {
+  return (
+    <div className="min-h-screen w-full bg-[#111] text-white">
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#111]/80 backdrop-blur">
+        <div className="max-w-7xl mx-auto px-4 py-4 grid grid-cols-12 gap-3 items-center">
+          <a href="#" className="col-span-6 md:col-span-4 hover:text-yellow-300">
+            <h1 className="text-base font-semibold tracking-tight">{DATA.name}</h1>
+          </a>
+          <p className="col-span-6 md:col-span-4 text-sm text-zinc-200">{DATA.role}</p>
+          <p className="hidden md:block md:col-span-4 text-sm text-zinc-400 text-right">{DATA.location}</p>
         </div>
-        <div class="card span-6">
-          <h3>What I’m looking for</h3>
-          <p>Internships or part‑time roles in software engineering, security engineering, or embedded/IoT where I can ship features, learn from senior mentors, and contribute to real products.</p>
-        </div>
-      </div>
-    </section>
+      </header>
 
-    <!-- SKILLS -->
-    <section id="skills">
-      <div class="section-title"><h2>Skills</h2><div class="hr"></div></div>
-      <div class="grid">
-        <div class="card span-4">
-          <h3>Languages</h3>
-          <p>Python, C/C++, Java, JavaScript (ES6+), Bash</p>
-        </div>
-        <div class="card span-4">
-          <h3>Frameworks & Tools</h3>
-          <p>Git/GitHub, Jupyter, Arduino/ESP-IDF, OpenCV, Tesseract, Tailwind/Bootstrap</p>
-        </div>
-        <div class="card span-4">
-          <h3>Domains</h3>
-          <p>Cybersecurity (red‑team basics), IoT/Embedded, Computer Architecture fundamentals, Machine Learning (intro)</p>
-        </div>
-      </div>
-    </section>
+      {/* About + Timeline */}
+      <main className="max-w-7xl mx-auto px-4">
+        <section className="grid grid-cols-12 gap-6 py-8">
+          <div className="col-span-12 md:col-span-5 space-y-3">
+            <p className="text-xs uppercase tracking-wider text-white/40">About</p>
+            <p className="text-sm leading-relaxed text-zinc-100">
+              {DATA.about} If you have an interesting idea, please{" "}
+              <a className="link" href={DATA.email}>get in touch</a>.
+            </p>
+          </div>
 
-    <!-- PROJECTS -->
-    <section id="projects">
-      <div class="section-title"><h2>Projects</h2><div class="hr"></div></div>
-      <div class="grid">
-        <div class="card span-6">
-          <h3>ESP32‑CAM Telegram Cat Monitor</h3>
-          <p>ESP32‑CAM with motion detection that sends snapshots via a Telegram bot; custom Wi‑Fi config, simple cloudless design. <em>(Code link / screenshots here.)</em></p>
-        </div>
-        <div class="card span-6">
-          <h3>Chess Game (OOP)</h3>
-          <p>Java OOP group project implementing full chess rules, UI, and move validation. <em>(GitHub repo link.)</em></p>
-        </div>
-        <div class="card span-6">
-          <h3>Nitro Bot Ultimate GUI</h3>
-          <p>Python + OpenCV + Tesseract for OCR/automation. Designed a GUI and keystroke automation pipeline; pluggable modules. <em>(Repo/images.)</em></p>
-        </div>
-        <div class="card span-6">
-          <h3>Vape Device Teardown Notes</h3>
-          <p>Reverse‑engineered a small microcontroller‑based device; documented wiring, control path, and button mechanism; wrote educational notes on electronics and safety.</p>
-        </div>
-      </div>
-    </section>
+          <div className="col-span-12 md:col-span-7 grid grid-cols-6 gap-x-3 gap-y-4">
+            <p className="col-span-2 text-xs uppercase tracking-wider text-white/40">Team</p>
+            <p className="col-span-4 text-xs uppercase tracking-wider text-white/40">Description</p>
 
-    <!-- EXPERIENCE (timeline) -->
-    <section id="experience">
-      <div class="section-title"><h2>Experience</h2><div class="hr"></div></div>
-      <div class="timeline">
-        <!-- Replace with your actual LinkedIn items -->
-        <div class="t-item">
-          <div class="t-meta">2024 – Present · Student Projects / Freelance</div>
-          <strong>Software & Security Projects</strong>
-          <div class="muted">Built IoT prototypes, automation tools, and coursework projects; collaborated in small teams using GitHub.</div>
-        </div>
-        <div class="t-item">
-          <div class="t-meta">2023 – 2024 · Texas State University</div>
-          <strong>CS Coursework & Labs</strong>
-          <div class="muted">Object‑Oriented Programming (A), Computer Architecture (A); lab reports, LaTeX documentation, Verilog exposure.</div>
-        </div>
-      </div>
-    </section>
+            {DATA.highlights.map((h) => (
+              <>
+                <h4 className="col-span-2 text-sm font-medium text-white" key={h.team+"t"}>
+                  {h.team}
+                  <br />
+                  <span className="font-normal text-zinc-300">{h.when}</span>
+                </h4>
+                <p className="col-span-4 text-sm text-zinc-200" key={h.team+"d"}>{h.desc}</p>
+              </>
+            ))}
+          </div>
+        </section>
 
-    <!-- EDUCATION -->
-    <section id="education">
-      <div class="section-title"><h2>Education</h2><div class="hr"></div></div>
-      <div class="grid">
-        <div class="card span-12">
-          <h3>Texas State University – B.S. in Computer Science</h3>
-          <p>Junior/Senior standing · Interests: Cybersecurity, Embedded/IoT, AI/ML · Organizations/courses as applicable.</p>
-        </div>
-      </div>
-    </section>
+        {/* Projects Grid */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-16">
+          {DATA.projects.map((p, i) => (
+            <motion.div
+              key={p.title + i}
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.4, delay: i * 0.03 }}
+            >
+              <ProjectCard p={p} />
+            </motion.div>
+          ))}
+        </section>
+      </main>
 
-    <!-- CERTIFICATIONS (optional) -->
-    <section id="certs">
-      <div class="section-title"><h2>Certifications</h2><div class="hr"></div></div>
-      <div class="grid">
-        <div class="card span-12">
-          <p><em>Add any relevant badges: Cisco Intro to Cybersecurity, Google IT Support, GitHub Student Developer Pack perks, etc.</em></p>
+      {/* Footer */}
+      <footer className="bg-[#1C1C1C] border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-12 gap-6 text-sm">
+          <div className="col-span-12 md:col-span-6 space-y-2">
+            <span className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded-full border border-yellow-300 text-yellow-300 text-[11px] lowercase">v1.0.0</span>
+              <span className="uppercase text-zinc-500 text-[11px]">Last updated — today</span>
+            </span>
+          </div>
+          <div className="col-span-12 sm:col-span-3 space-y-1">
+            {DATA.footerLinks.map((l, i) => (
+              <p key={i}>
+                <a className="link" href={l.href} target={l.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer">
+                  {l.label}
+                </a>
+              </p>
+            ))}
+          </div>
+          <div className="col-span-12 sm:col-span-3">
+            <p>Let\'s build something together.</p>
+            <p>
+              <a className="link" href={DATA.email}>you@example.com</a>
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
+        <Ticker />
+      </footer>
 
-    <!-- CONTACT -->
-    <section id="contact">
-      <div class="section-title"><h2>Contact</h2><div class="hr"></div></div>
-      <div class="grid">
-        <div class="card span-6">
-          <h3>Get in touch</h3>
-          <p>Email: <a href="mailto:your.email@domain.com">your.email@domain.com</a><br>
-             GitHub: <a href="https://github.com/YOUR_GITHUB" target="_blank">github.com/YOUR_GITHUB</a><br>
-             LinkedIn: <a href="https://www.linkedin.com/in/johann-steinhoff-b95b962a7/" target="_blank">linkedin.com/in/johann-steinhoff...</a></p>
-        </div>
-        <div class="card span-6">
-          <h3>Résumé</h3>
-          <p><a href="resume.pdf" target="_blank">Download PDF</a> · Place a file named <code>resume.pdf</code> in the repo root.</p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container">© <span id="year"></span> Johann Steinhoff · Built with GitHub Pages</div>
-  </footer>
-
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
-</body>
-</html>
+      {/* Styles that emulate the dotted links & card border vibe */}
+      <style>{`
+        .link { border-bottom: 1px dotted rgba(234, 179, 8, 0.6); padding: 0 2px; }
+        .link:hover { color: rgb(234 179 8); background: rgba(234, 179, 8, 0.08); }
+      `}</style>
+    </div>
+  );
+}
